@@ -1,0 +1,79 @@
+﻿@model IEnumerable<ABC_Retail_POE_3.Models.Product>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Add Product</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Image
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductCategory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductPrice) (In ZAR)
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th> *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    <img src="@Url.Action("GetImage", "Products", new { productId = item.ProductId })" height="250" width="250" />
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductCategory)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductPrice)
+            </td>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.User.UserName)
+               </td> *@
+            <td>
+                    <div class="d-flex flex-column align-items-start">
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("Employee"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-warning mb-2">Edit</a>
+                        }
+
+                        <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-info mb-2">Details</a>
+
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("Employee"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-danger mb-2"
+                               onclick="return confirm('Are you sure you want to delete this order?');">Delete</a>
+                        }
+                    </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

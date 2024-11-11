@@ -1,0 +1,100 @@
+﻿@model IEnumerable<ABC_Retail_POE_3.Models.Order>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h1 style="color:seagreen">Orders</h1>
+<p>       </p>
+<h4>~ Welcome to the order page! Found something you loved from the 'Products' page? Well then, now just go ahead and place an order! ^^</h4>
+<p>           </p>
+<h4 style="color:seagreen">As For How To Place An Order: </h4>
+<h5>* Select 'Place Order'</h5>
+<h5>* Enter all the necessary details and you will be good to go!</h5>
+<h5>* Even if you make a mistake with an order, just reach out to us by contacting one of our Admin or Employee team members to help (*Refer to 'Contact Us'*).</h5>
+<p>             </p>
+<p>_____________________________________________________________________________________________________________________________________________________________________________________________________________</p>
+
+@if (TempData["OrderSuccess"] != null)
+{
+    <script>
+        alert("Your order has been placed successfully!");
+    </script>
+}
+
+<p>
+    <a asp-action="Create">Place Order</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShippingAddress)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderId)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModifiedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShippingAddress)
+            </td>
+            <td>
+                    <div class="d-flex flex-column align-items-start">
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("Employee"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-warning mb-2">Edit</a>
+                        }
+                        
+                        <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info mb-2">Details</a>
+
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("Employee"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.OrderId" class="btn btn-danger mb-2"
+                               onclick="return confirm('Are you sure you want to delete this order?');">Delete</a>
+                        }
+                    </div>
+                    
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
